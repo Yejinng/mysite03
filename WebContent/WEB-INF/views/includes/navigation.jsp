@@ -9,21 +9,31 @@
 				<c:when test="${param.menu == 'main' }">
 					<li class = "selected"><a href="${pageContext.request.contextPath }/main">MAIN</a></li>
 					<li><a href="${pageContext.request.contextPath }/guestbook">GUESTBOOK</a></li>
+					<li><a href="${pageContext.request.contextPath }/guestbook?a=ajax">GUESTBOOK-AJAX</a></li>
 					<li><a href="${pageContext.request.contextPath }/board">BOARD</a></li>
 				</c:when>
 				<c:when test="${param.menu == 'guestbook' }">
 					<li><a href="${pageContext.request.contextPath }/main">MAIN</a></li>
 					<li class = "selected"><a href="${pageContext.request.contextPath }/guestbook">GUESTBOOK</a></li>
+					<li><a href="${pageContext.request.contextPath }/guestbook?a=ajax">GUESTBOOK-AJAX</a></li>
 					<li><a href="${pageContext.request.contextPath }/board">BOARD</a></li>
 				</c:when>
-				<c:when test="${param.menu == 'board' }">
+				<c:when test="${param.menu == 'guestbook-ajax' }">
 					<li><a href="${pageContext.request.contextPath }/main">MAIN</a></li>
 					<li><a href="${pageContext.request.contextPath }/guestbook">GUESTBOOK</a></li>
+					<li class = "selected"><a href="${pageContext.request.contextPath }/guestbook?a=ajax">GUESTBOOK-AJAX</a></li>
+					<li><a href="${pageContext.request.contextPath }/board">BOARD</a></li>
+				</c:when>
+					<c:when test="${param.menu == 'board' }">
+					<li><a href="${pageContext.request.contextPath }/main">MAIN</a></li>
+					<li><a href="${pageContext.request.contextPath }/guestbook">GUESTBOOK</a></li>
+					<li><a href="${pageContext.request.contextPath }/guestbook?a=ajax">GUESTBOOK-AJAX</a></li>
 					<li class = "selected"><a href="${pageContext.request.contextPath }/board">BOARD</a></li>
 				</c:when>
 				<c:otherwise>
 					<li><a href="${pageContext.request.contextPath }/main">MAIN</a></li>
 					<li><a href="${pageContext.request.contextPath }/guestbook">GUESTBOOK</a></li>
+					<li><a href="${pageContext.request.contextPath }/guestbook?a=ajax">GUESTBOOK-AJAX</a></li>
 					<li><a href="${pageContext.request.contextPath }/board">BOARD</a></li>
 				</c:otherwise>
 			</c:choose>

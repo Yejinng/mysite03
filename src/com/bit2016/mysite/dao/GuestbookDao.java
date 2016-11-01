@@ -28,9 +28,60 @@ public class GuestbookDao {
 
 	}
 
-	public void insert(GuestbookVo vo) {
+	public GuestbookVo get(Long no) {
+		GuestbookVo vo = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			
+			String sql = "select no, name, content, password, to_char(reg_date, 'yyyy-mm-dd hh:mi:ss') from guestbook where no = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, no);
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+
+				vo = new GuestbookVo();
+				vo.setNo(rs.getLong(1));
+				vo.setName(rs.getString(2));
+				vo.setContent(rs.getString(3));
+				vo.setPassword(rs.getString(4));
+				vo.setRegDate(rs.getString(5));
+			
+			}
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+			if( rs != null) {
+					rs.close();
+			}
+			if( pstmt != null ) {
+				pstmt.close();
+			}
+			if( conn != null ) {
+				conn.close();
+			}
+			} catch (SQLException e) {
+				System.out.println("error:" + e);
+			}
+		}
+				
+		return vo;
+	}
+	public Long insert(GuestbookVo vo) {
+		Long no = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
 		try {
 			conn = getConnection();
 
@@ -45,6 +96,15 @@ public class GuestbookDao {
 
 			pstmt.executeUpdate();
 
+			// primary key (guestbook_seq.currval) 받아오기
+			stmt = conn.createStatement();
+			sql = "select guestbook_seq.currval from guestbook ";
+			rs = stmt.executeQuery(sql);
+			
+			if( rs.next()) {
+				no = rs.getLong(1);
+			}
+			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
@@ -59,12 +119,13 @@ public class GuestbookDao {
 				System.out.println("error:" + e);
 			}
 		}
-
+		return no;
 	}
 
-	public void delete(GuestbookVo vo) {
+	public boolean delete(GuestbookVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		int result = 0;
 		try {
 			conn = getConnection();
 
@@ -78,8 +139,8 @@ public class GuestbookDao {
 			pstmt.setLong(1, vo.getNo());
 			pstmt.setString(2, vo.getPassword());
 
-			pstmt.executeUpdate();
-
+			result = pstmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
@@ -94,6 +155,7 @@ public class GuestbookDao {
 				System.out.println("error:" + e);
 			}
 		}
+		return ( result == 1 );
 	}
 
 	public List<GuestbookVo> getList() {
@@ -136,6 +198,62 @@ public class GuestbookDao {
 				}
 				if (stmt != null) {
 					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return list;
+	}
+	
+	public List<GuestbookVo> getList(int page) {
+		List<GuestbookVo> list = new ArrayList<GuestbookVo>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			String sql = " select * from ( select a.*, rownum rn from ( select no, name, content, password, to_char ( reg_date, 'yyyy-mm-dd hh:mi:ss' ) as reg_date from guestbook  order by reg_date desc ) a ) where ( ? - 1 )*5 +1 <= rn and rn <= ? *5 ";
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, page);
+			pstmt.setInt(2, page);
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				Long no = rs.getLong(1);
+				String name = rs.getString(2);
+				String content = rs.getString(3);
+				String password = rs.getString(4);
+				String regDate = rs.getString(5);
+
+				GuestbookVo vo = new GuestbookVo();
+				vo.setNo(no);
+				vo.setName(name);
+				vo.setContent(content);
+				vo.setPassword(password);
+				vo.setRegDate(regDate);
+
+				list.add(vo);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
 				}
 				if (conn != null) {
 					conn.close();

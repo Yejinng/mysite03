@@ -92,10 +92,13 @@ insert into board
 			1, -- 부모글 싶이 +1
 			2);
 
-
-
-
 commit;
+--이메일
+select no, email, name
+ from users
+ where email="kicks@naver.com";
 
+select guestbook_seq.nextval from guestbook; 
+select guestbook_seq.currval from guestbook;
 
 
