@@ -7,7 +7,7 @@
 			
 			<h1  ><a href="${pageContext.request.contextPath }/main">
 			
-			<img src="/mysite3/assets/images/mysite.png" width="100" height="50" />
+			<img src="${pageContext.request.contextPath }/assets/images/mysite.png" width="100" height="50" />
 
 			</a>
 			</h1>

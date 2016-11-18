@@ -57,7 +57,7 @@ $(function(){
 			return;
 		}
 		$.ajax({
-			url:"/mysite3/api/user?a=chkemail&email=" + email,
+			url:"${pageContext.request.contextPath }/api/user?a=chkemail&email=" + email,
 			type:"get",
 			dataType:"json",
 			data:"",
